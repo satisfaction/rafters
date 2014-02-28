@@ -17,7 +17,7 @@
     option :order
 
     def topics
-      @collection ||= Topic.where(sort_by: options[:sort_by], order: options[:order])
+      @topics ||= Topic.where(sort_by: options[:sort_by], order: options[:order])
     end
   end
 ```
@@ -31,8 +31,8 @@
     option :with_author, default: true
 
     source :topics do
-      map :topics, to: "collection" do
-        map :subject, to: "name"
+      map :topics, to: :collection do
+        map :subject, to: :name
       end
     end
   end
@@ -61,5 +61,5 @@
 ```erb
   # app/views/topics/index.html.erb
 
-  <%= render_component :list_view, with: @topics, options: { with_author: false } %>
+  <%= render_component :list_view, source: @topics, options: { with_author: false } %>
 ```
