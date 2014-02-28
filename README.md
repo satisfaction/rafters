@@ -28,7 +28,7 @@
   class ListViewComponent < Rafters::Component
     name :list_view
 
-    option :with_author, default: true
+    option :classes, default: "list-view"
 
     source :topics do
       map :topics, to: :collection do
@@ -61,5 +61,5 @@
 ```erb
   # app/views/topics/index.html.erb
 
-  <%= render_component :list_view, source: @topics, options: { with_author: false } %>
+  <%= render_component :list_view, source: @topics, options: { classes: "list-view" } %>
 ```
