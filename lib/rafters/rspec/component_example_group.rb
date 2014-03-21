@@ -7,31 +7,18 @@ module Rafters::ComponentExampleGroup
   included do
     metadata[:type] = :component
 
-    controller do
-      # Empty controller
-    end
-
-    let(:identifier) { described_class.to_s.underscore }
-    let(:options) { Hash.new }
-
     subject do
-      described_class.new(identifier, options).tap do |s|
-        s.controller = controller
+      described_class.new(described_class.name, {}).tap do |component|
+        component.controller = controller
       end
     end
+  end
 
-    let(:controller) do
-      example.metadata[:controller].new.tap do |s|
-        s.stub(:params).and_return({})
-      end
-    end
-
-    let(:renderer) do
-      Rafters::Renderer.new(controller, controller.view_context)
-    end
-
-    let(:page) do
-      Capybara.string(renderer.render(subject))
+  def controller
+    @controller ||= example.metadata[:controller].new.tap do |controller|
+      controller.request = ActionController::TestRequest.new
+      controller.response = ActionController::TestResponse.new
+      controller.params = example.metadata[:params] || HashWithIndifferentAccess.new
     end
   end
 
@@ -44,6 +31,10 @@ module Rafters::ComponentExampleGroup
       end
 
       metadata[:controller].class_eval(&body)
+    end
+
+    def params(params = {})
+      metadata[:params] ||= params
     end
   end
 end
