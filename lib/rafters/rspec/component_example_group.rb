@@ -6,6 +6,8 @@ module Rafters::ComponentExampleGroup
 
   included do
     metadata[:type] = :component
+    
+    controller # Setup the controller instance
 
     subject do
       described_class.new(described_class.name, {}).tap do |component|
@@ -30,7 +32,9 @@ module Rafters::ComponentExampleGroup
         def self.name; "AnonymousController"; end
       end
 
-      metadata[:controller].class_eval(&body)
+      if block_given?
+        metadata[:controller].class_eval(&body)
+      end
     end
 
     def params(params = {})
