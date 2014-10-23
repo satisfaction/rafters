@@ -36,6 +36,14 @@ class Rafters::Renderer
   end
 
   def render_without_wrapper(component)
-    view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+    if component.rescue_from_options.present?
+      begin
+        view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+      rescue component.rescue_from_options[:exception]
+        component.rescue_from_options[:block].call(component)
+      end
+    else
+      view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+    end
   end
 end
