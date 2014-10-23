@@ -71,7 +71,7 @@ class Rafters::Component
   end
 
   class << self
-    attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks, :_sources, :_views
+    attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks, :_sources, :_views, :_rescue_from
 
     def inherited(base)
       base.option(:wrapper, true)
@@ -120,6 +120,10 @@ class Rafters::Component
 
     def register_view(name, options = {})
       (self._views ||= {})[name.to_s] = options
+    end
+
+    def rescue_from(exception, &block)
+      self._rescue_from = { exception: exception, block: block }
     end
   end
 
