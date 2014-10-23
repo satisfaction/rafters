@@ -36,10 +36,14 @@ class Rafters::Renderer
   end
 
   def render_without_wrapper(component)
-    begin
+    if component.class._rescue_from.present?
+      begin
+        view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+      rescue component.class._rescue_from[:exception]
+        component.class._rescue_from[:block].call(component)
+      end
+    else
       view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
-    rescue component.class._rescue_from[:exception]
-      component.class._rescue_from[:block].call(component)
     end
   end
 end
