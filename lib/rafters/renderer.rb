@@ -37,13 +37,23 @@ class Rafters::Renderer
 
   def render_without_wrapper(component)
     if component.rescue_from_options.present?
-      begin
+      rescue_or_reraise_exception(component) do
         view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
-      rescue component.rescue_from_options[:exception]
-        component.rescue_from_options[:block].call(component)
       end
     else
       view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+    end
+  end
+
+  def rescue_or_reraise_exception(component, &block)
+    begin
+      block.call
+    rescue Exception => exception
+      if component.rescue_from_options[:exception].present? && exception.is_a?(component.rescue_from_options[:exception])
+        component.rescue_from_options[:block].call(component, exception)
+      else
+        raise exception
+      end
     end
   end
 end

@@ -71,7 +71,7 @@ describe Rafters::Renderer do
         class BarBazException < Exception; end
 
         component.stub(:rescue_from_options).and_return {
-          { exception: FooBarException, block: lambda { |c| raise BarBazException } }
+          { exception: FooBarException, block: -> (component, exception) { raise BarBazException } }
         }
 
         component.stub(:locals).and_return {
