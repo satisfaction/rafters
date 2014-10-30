@@ -64,24 +64,5 @@ describe Rafters::Renderer do
         subject.render(component)
       end
     end
-
-    context "with a component that has a rescue_from declared" do
-      before do
-        class FooBarException < Exception; end
-        class BarBazException < Exception; end
-
-        component.stub(:rescue_from_options).and_return {
-          { exception: FooBarException, block: -> (component, exception) { raise BarBazException } }
-        }
-
-        component.stub(:locals).and_return {
-          raise FooBarException
-        }
-      end
-
-      it "rescues from the provided exception with the provided block" do
-        expect { subject.render(component) }.to raise_error(BarBazException)
-      end
-    end
   end
 end

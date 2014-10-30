@@ -27,5 +27,24 @@ describe Rafters::Context do
         controller.render_component(:foo, { as: "foo", settings: { test: true } })
       end
     end
+
+    context "with a component that has a rescue_from declared" do
+      before do
+        class FooBarException < Exception; end
+        class BarBazException < Exception; end
+
+        FooComponent.rescue_from(FooBarException) do |component, exception|
+          raise BarBazException
+        end
+
+        renderer.stub(:render).and_return do
+          raise FooBarException
+        end
+      end
+
+      it "rescues from the provided exception with the provided block" do
+        expect { controller.render_component(:foo, { as: "foo" }) }.to raise_error(BarBazException)
+      end
+    end
   end
 end
