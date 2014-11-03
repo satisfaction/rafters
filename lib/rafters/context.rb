@@ -10,6 +10,8 @@ module Rafters::Context
     begin
       block.call
     rescue Exception => exception
+      exception = exception.original_exception if exception.respond_to?(:original_exception)
+
       if component.rescue_from_options[:exception].present? && exception.is_a?(component.rescue_from_options[:exception])
         component.rescue_from_options[:block].call(component, exception)
       else
