@@ -19,18 +19,10 @@ class Rafters::Railtie < Rails::Railtie
   end
 
   config.after_initialize do |app|
-    replace_preprocessor(app, 'text/css')
-    replace_preprocessor(app, 'application/javascript')
-  end
+    app.assets.unregister_preprocessor('text/css', Sprockets::DirectiveProcessor)
+    app.assets.register_preprocessor('text/css', Rafters::DirectiveProcessor)
 
-  private
-
-  def replace_preprocessor(app, type)
-    begin
-      app.assets.unregister_preprocessor(type, Sprockets::DirectiveProcessor)
-      app.assets.register_preprocessor(type, Rafters::DirectiveProcessor)
-    rescue
-      Rails.logger.warn("Could not load Sprockets::ComponentProcessor for #{type}")
-    end
+    app.assets.unregister_preprocessor('application/javascript', Sprockets::DirectiveProcessor)
+    app.assets.register_preprocessor('application/javascript', Rafters::DirectiveProcessor)
   end
 end
