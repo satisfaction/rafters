@@ -32,6 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'spork', '~> 0.9.2'
 
   spec.add_dependency "hashie", "~> 2.0.5"
-  spec.add_dependency "rails", "~> 3.2.14"
+  spec.add_dependency "rails", "~> 4.0"
   spec.add_dependency "sprockets", "~> 2.2.2"
 end
