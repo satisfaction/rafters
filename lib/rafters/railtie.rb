@@ -18,7 +18,7 @@ class Rafters::Railtie < Rails::Railtie
     app.config.autoload_paths += Dir[app.root.join("app", "components", "*/")]
   end
 
-  config.after_initialize do |app|
+  initializer "register.preprocessors" do |app|
     app.assets.unregister_preprocessor('text/css', Sprockets::DirectiveProcessor)
     app.assets.register_preprocessor('text/css', Rafters::DirectiveProcessor)
 
