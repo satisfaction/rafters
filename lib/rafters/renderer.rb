@@ -37,7 +37,7 @@ class Rafters::Renderer
 
   def render_without_wrapper(component, cache_key = nil)
     if cache_key.present?
-      view_context.cache(cache_key) do
+      Rails.cache.fetch(cache_key) do
         view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
       end
     else
