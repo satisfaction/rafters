@@ -10,15 +10,15 @@ class Rafters::Renderer
     end
   end
 
-  def render(component)
+  def render(component, cache_key = nil)
     component.controller = @controller
 
     component.execute_callbacks!(:before_render_callbacks)
 
     result = if component.options.wrapper?
-      render_with_wrapper(component)
+      render_with_wrapper(component, cache_key)
     else
-      render_without_wrapper(component)
+      render_without_wrapper(component, cache_key)
     end
 
     result.tap do
@@ -28,14 +28,20 @@ class Rafters::Renderer
 
   private
 
-  def render_with_wrapper(component)
-    view_context.content_tag(:div, render_without_wrapper(component), { 
+  def render_with_wrapper(component, cache_key = nil)
+    view_context.content_tag(:div, render_without_wrapper(component, cache_key), { 
       class: "component #{component.options.view_name.dasherize}", 
       id: component.identifier
     })
   end
 
-  def render_without_wrapper(component)
-    view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+  def render_without_wrapper(component, cache_key = nil)
+    if cache_key.present?
+      view_context.cache(cache_key) do
+        view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+      end
+    else
+      view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+    end
   end
 end

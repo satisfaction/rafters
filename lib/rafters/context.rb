@@ -21,14 +21,16 @@ module Rafters::Context
   end
 
   def render_component(name, options = {})
+    cache_key = options.delete(:cache_key)
+
     component = component(name, options)
 
     if component.rescue_from_options.present?
       rescue_or_reraise_component_exception(component) do
-        component_renderer.render(component)
+        component_renderer.render(component, cache_key)
       end
     else
-      component_renderer.render(component)
+      component_renderer.render(component, cache_key)
     end
   end
 
