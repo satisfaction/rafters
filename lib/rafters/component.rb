@@ -22,6 +22,11 @@ class Rafters::Component
     end
   end
 
+  def unsuppressed_settings
+    settings_to_suppress = klass_setting_options.select { |setting, options| !!options[:suppress] }.keys
+    settings.except(*settings_to_suppress)
+  end
+
   def attributes
     @attributes ||= objectify.tap do |_attributes|
       klass_attributes.each do |attribute|
@@ -51,7 +56,7 @@ class Rafters::Component
   end
 
   def as_json(*args)
-    { identifier: identifier, options: options.as_json(*args), settings: settings.as_json(*args) }.as_json
+    { identifier: identifier, options: options.as_json(*args), settings: unsuppressed_settings.as_json(*args) }.as_json
   end
 
   def controller(variable_or_method_name, *args)

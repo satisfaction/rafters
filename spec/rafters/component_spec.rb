@@ -321,6 +321,16 @@ describe Rafters::Component do
     it "includes the component's settings" do
       expect(subject.as_json["settings"]).to eq({ foo: "bar" }.stringify_keys!)
     end
+
+    context "when some settings are suppressed" do
+      before do
+        FooBarComponent.setting(:bar, default: "baz", suppress: true)
+      end
+
+      it "does not include the suppressed settings in the output" do
+        expect(subject.as_json["settings"]).to eq({ foo: "bar" }.stringify_keys!)
+      end
+    end
   end
 
   describe "#controller" do
