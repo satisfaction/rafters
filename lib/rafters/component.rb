@@ -86,6 +86,7 @@ class Rafters::Component
       base.option(:wrapper, true)
       base.option(:view_name, base.name.underscore)
       base.option(:source_name, nil)
+      base.register_view(base.name.underscore)
     end
 
     def before_render(method_name)
